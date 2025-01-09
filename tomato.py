@@ -117,7 +117,7 @@ plt.title('Temperatura de los Componentes')
 plt.xlabel('Muestras')
 plt.ylabel('Temperatura (°C)')
 plt.legend()
-plt.savefig("/var/www/html/jocarsa-tomato/carga_temperatura.jpg")
+plt.savefig("/var/www/html/jocarsa-tomato/carga_temperatura.jpg") 
 plt.close()
 
 # Generar y guardar gráfica de Número de Conexiones
