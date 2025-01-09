@@ -4,7 +4,7 @@ session_start();
 
 // Define valid credentials
 $VALID_USERNAME = 'jocarsa';
-$VALID_PASSWORD = 'jocarsa'; 
+$VALID_PASSWORD = 'jocarsa';
 
 // Handle Logout
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
@@ -39,15 +39,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 
 // Check if the user is logged in
 $loggedIn = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
+
+// Function to retrieve images from the 'img' directory
+function getImages($dir = 'img/') {
+    $images = [];
+    if (is_dir($dir)) {
+        // Scan the directory for image files
+        $files = scandir($dir);
+        foreach ($files as $file) {
+            // Check for valid image extensions
+            if (preg_match('/\.(jpg|jpeg|png|gif|svg)$/i', $file)) {
+                $images[] = $file;
+            }
+        }
+    }
+    return $images;
+}
+
+// Retrieve images
+$images = $loggedIn ? getImages() : [];
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jocarsa | tomato</title>
+    <title>jocarsa | Tomato</title>
     <link rel="icon" href="https://jocarsa.com/static/logo/jocarsa%20%7c%20Tomato.svg" type="image/svg+xml">
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
         /* General Styles */
         * {
             margin: 0;
@@ -56,14 +77,53 @@ $loggedIn = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family:Ubuntu, Arial, sans-serif;
             background-color: #f4f4f4;
+            color: #333;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: tomato;
+            width: 100%;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header .app-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .header .logout-button {
+            background-color: tomato;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .header .logout-button:hover {
+            background-color: darkred;
+        }
+
+        /* Adjust body padding to prevent content being hidden behind the fixed header */
+        .content {
+            padding-top: 70px; /* Height of the header + some spacing */
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            color: #333;
         }
 
         /* Login Form Styles */
@@ -73,6 +133,7 @@ $loggedIn = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 300px;
+            margin-top: 50px; /* Adjusted for header */
         }
 
         .login-container h2 {
@@ -127,6 +188,7 @@ $loggedIn = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
             gap: 20px;
             width: 90%;
             max-width: 1200px;
+            margin-bottom: 40px;
         }
 
         .panel {
@@ -148,6 +210,7 @@ $loggedIn = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
             font-size: 1.5rem;
             margin-bottom: 1rem;
             color: tomato;
+            text-transform: capitalize; /* Capitalize titles */
         }
 
         .image {
@@ -155,25 +218,6 @@ $loggedIn = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
             max-height: 200px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Logout Button */
-        .logout-button {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: tomato;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 1rem;
-        }
-
-        .logout-button:hover {
-            background-color: darkred;
         }
 
         /* Modal Styles */
@@ -224,47 +268,56 @@ $loggedIn = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
         .close:hover {
             background-color: darkred;
         }
+        .app-name{
+        	display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			justify-content: center;
+			align-items: center;
+			align-content: stretch;
+        }
+        .app-name img{
+        	width:50px;
+        }
     </style>
 </head>
 <body>
     <?php if ($loggedIn): ?>
-        <!-- Logout Button -->
-        <a href="index.php?action=logout" class="logout-button">Cerrar Sesión</a>
-
-        <!-- Dashboard Content -->
-        <h1 class="dashboard-title">Panel de Control del Servidor</h1>
-        <div class="dashboard">
-            <div class="panel" data-image="carga_cpu.jpg">
-                <h1 class="title">CPU</h1>
-                <img src="carga_cpu.jpg" alt="Gráfica de CPU" class="image">
-            </div>
-            <div class="panel" data-image="carga_ram.jpg">
-                <h1 class="title">RAM</h1>
-                <img src="carga_ram.jpg" alt="Gráfica de RAM" class="image">
-            </div>
-            <div class="panel" data-image="carga_disco.jpg">
-                <h1 class="title">Disco</h1>
-                <img src="carga_disco.jpg" alt="Gráfica de Disco" class="image">
-            </div>
-            <div class="panel" data-image="carga_red.jpg">
-                <h1 class="title">Red</h1>
-                <img src="carga_red.jpg" alt="Gráfica de Red" class="image">
-            </div>
-            <div class="panel" data-image="carga_conexiones.jpg">
-                <h1 class="title">Conexiones</h1>
-                <img src="carga_conexiones.jpg" alt="Gráfica de Conexiones" class="image">
-            </div>
-            <div class="panel" data-image="carga_temperatura.jpg">
-                <h1 class="title">Temperatura</h1>
-                <img src="carga_temperatura.jpg" alt="Gráfica de Temperatura" class="image">
-            </div>
+        <!-- Header -->
+        <div class="header">
+            <div class="app-name"><img src="https://jocarsa.com/static/logo/jocarsa | White.svg"> jocarsa | tomato</div>
+            <a href="index.php?action=logout" class="logout-button">Cerrar Sesión</a>
         </div>
 
-        <!-- Modal -->
-        <div id="imageModal" class="modal">
-            <div class="modal-content">
-                <button class="close">&times;</button>
-                <img src="" alt="Imagen Ampliada" id="modalImage">
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Dashboard Content -->
+            <h1 class="dashboard-title"></h1>
+            <div class="dashboard">
+                <?php if (!empty($images)): ?>
+                    <?php foreach ($images as $image): ?>
+                        <?php
+                            // Extract the title from the image filename
+                            $title = pathinfo($image, PATHINFO_FILENAME);
+                            // Replace underscores or dashes with spaces and capitalize words
+                            $title = ucwords(str_replace(['_', '-'], ' ', $title));
+                        ?>
+                        <div class="panel" data-image="<?php echo 'img/' . htmlspecialchars($image); ?>">
+                            <h1 class="title"><?php echo htmlspecialchars($title); ?></h1>
+                            <img src="<?php echo 'img/' . htmlspecialchars($image); ?>" alt="<?php echo htmlspecialchars($title); ?>" class="image">
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No hay imágenes disponibles en la carpeta 'img'.</p>
+                <?php endif; ?>
+            </div>
+
+            <!-- Modal -->
+            <div id="imageModal" class="modal">
+                <div class="modal-content">
+                    <button class="close">&times;</button>
+                    <img src="" alt="Imagen Ampliada" id="modalImage">
+                </div>
             </div>
         </div>
 

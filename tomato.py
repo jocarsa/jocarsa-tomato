@@ -70,7 +70,7 @@ plt.title('Uso de CPU')
 plt.xlabel('Muestras')
 plt.ylabel('Porcentaje de Uso')
 plt.legend()
-plt.savefig("/var/www/html/jocarsa-tomato/carga_cpu.jpg")
+plt.savefig("/var/www/html/jocarsa-tomato/img/carga_cpu.jpg")
 plt.close()
 
 # Generar y guardar gráfica de RAM
@@ -82,7 +82,7 @@ plt.title('Uso de RAM')
 plt.xlabel('Muestras')
 plt.ylabel('Porcentaje de Uso')
 plt.legend()
-plt.savefig("/var/www/html/jocarsa-tomato/carga_ram.jpg")
+plt.savefig("/var/www/html/jocarsa-tomato/img/carga_ram.jpg")
 plt.close()
 
 # Generar y guardar gráfica de Disco
@@ -94,7 +94,7 @@ plt.title('Uso de Disco')
 plt.xlabel('Muestras')
 plt.ylabel('Porcentaje de Uso')
 plt.legend()
-plt.savefig("/var/www/html/jocarsa-tomato/carga_disco.jpg")
+plt.savefig("/var/www/html/jocarsa-tomato/img/carga_disco.jpg")
 plt.close()
 
 # Generar y guardar gráfica de Uso de Red
@@ -106,7 +106,7 @@ plt.title('Uso de Red')
 plt.xlabel('Muestras')
 plt.ylabel('Velocidad (Mbps)')
 plt.legend()
-plt.savefig("/var/www/html/jocarsa-tomato/carga_red.jpg")
+plt.savefig("/var/www/html/jocarsa-tomato/img/carga_red.jpg")
 plt.close()
 
 # Generar y guardar gráfica de Temperatura
@@ -117,7 +117,7 @@ plt.title('Temperatura de los Componentes')
 plt.xlabel('Muestras')
 plt.ylabel('Temperatura (°C)')
 plt.legend()
-plt.savefig("/var/www/html/jocarsa-tomato/carga_temperatura.jpg") 
+plt.savefig("/var/www/html/jocarsa-tomato/img/carga_temperatura.jpg")
 plt.close()
 
 # Generar y guardar gráfica de Número de Conexiones
@@ -128,7 +128,7 @@ plt.title('Número de Conexiones Activas')
 plt.xlabel('Muestras')
 plt.ylabel('Conexiones')
 plt.legend()
-plt.savefig("/var/www/html/jocarsa-tomato/carga_conexiones.jpg")
+plt.savefig("/var/www/html/jocarsa-tomato/img/carga_conexiones.jpg")
 plt.close()
 
 print("Métricas guardadas y gráficas generadas correctamente.")
