@@ -4,7 +4,7 @@ session_start();
 
 // Define valid credentials
 $VALID_USERNAME = 'jocarsa';
-$VALID_PASSWORD = 'jocarsa';
+$VALID_PASSWORD = 'jocarsa'; 
 
 // Handle Logout
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
