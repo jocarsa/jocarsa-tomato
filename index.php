@@ -132,8 +132,10 @@ $images = $loggedIn ? getImages() : [];
             padding: 30px 40px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            width: 400px;
+            margin:auto;
             margin-top: 50px; /* Adjusted for header */
+            text-align:center;
         }
 
         .login-container h2 {
@@ -363,6 +365,8 @@ $images = $loggedIn ? getImages() : [];
     <?php else: ?>
         <!-- Login Form -->
         <div class="login-container">
+        		<img src="https://jocarsa.com/static/logo/jocarsa | Tomato.svg">
+        		<h1>jocarsa | tomato</h1>
             <h2>Iniciar Sesión</h2>
             <?php if (isset($error)): ?>
                 <div class="error"><?php echo htmlspecialchars($error); ?></div>
