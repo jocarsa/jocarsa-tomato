@@ -71,14 +71,15 @@ def measure_metrics():
 
 # Function to obtain CPU temperatures (requires lm-sensors)
 def obtener_temperaturas():
-    try:
-        sensores = subprocess.check_output(['sensors'], encoding='utf-8')
-        for linea in sensores.splitlines():
-            if 'Core' in linea:
-                yield float(linea.split()[1].strip('+').strip('°C'))
-    except Exception as e:
-        print(f"Error al obtener temperaturas: {e}")
-        return []
+    # try:
+    #     sensores = subprocess.check_output(['sensors'], encoding='utf-8')
+    #     for linea in sensores.splitlines():
+    #         if 'Core' in linea:
+    #             yield float(linea.split()[1].strip('+').strip('°C'))
+    # except Exception as e:
+    #     print(f"Error al obtener temperaturas: {e}")
+    #     return []
+    return []
 
 # Load current data
 data_buffers = {key: load_data(path) for key, path in data_paths.items()}
