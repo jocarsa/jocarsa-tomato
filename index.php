@@ -65,6 +65,8 @@ $images = $loggedIn ? getImages($chartFolders[$selectedType]) : [];
     <title>jocarsa | Tomato</title>
     <link rel="icon" href="https://jocarsa.com/static/logo/tomato.png" type="image/svg+xml">
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
         /* Reset and General Styles */
         * {
             box-sizing: border-box;
@@ -72,7 +74,7 @@ $images = $loggedIn ? getImages($chartFolders[$selectedType]) : [];
             padding: 0;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Ubuntu,'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f2f5;
             color: #333;
             min-height: 100vh;
@@ -96,6 +98,16 @@ $images = $loggedIn ? getImages($chartFolders[$selectedType]) : [];
         .header .app-name {
             font-size: 1.5rem;
             font-weight: bold;
+            display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-items: center;
+	align-content: stretch;
+        }
+        .header .app-name img{
+        	width:50px;
+        	margin-right:20px;
         }
         .header .logout-button {
             background-color: tomato;
@@ -313,7 +325,7 @@ $images = $loggedIn ? getImages($chartFolders[$selectedType]) : [];
     <?php if ($loggedIn): ?>
         <!-- Header -->
         <div class="header">
-            <div class="app-name">jocarsa | Tomato</div>
+            <div class="app-name"><img src="https://jocarsa.com/static/logo/tomato.png">jocarsa | Tomato</div>
             <a href="index.php?action=logout" class="logout-button">Cerrar Sesión</a>
         </div>
 
