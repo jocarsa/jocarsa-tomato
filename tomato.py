@@ -5,21 +5,17 @@ import subprocess
 import os
 from datetime import datetime, timedelta
 
-# Paths for data files
+# Path for hourly data file
 data_paths = {
     "hourly": "/var/www/html/jocarsa-tomato/carga_hourly.txt",
-    "minute": "/var/www/html/jocarsa-tomato/carga_60min.txt",
-    "second": "/var/www/html/jocarsa-tomato/carga_300sec.txt",
 }
 
-# Paths for plot folders
+# Path for plot folder
 plot_folders = {
     "hourly": "/var/www/html/jocarsa-tomato/img/hourly",
-    "minute": "/var/www/html/jocarsa-tomato/img/minute",
-    "second": "/var/www/html/jocarsa-tomato/img/second",
 }
 
-# Create folders if they don't exist
+# Create the plot folder if it doesn't exist
 for folder in plot_folders.values():
     os.makedirs(folder, exist_ok=True)
 
@@ -71,6 +67,7 @@ def measure_metrics():
 
 # Function to obtain CPU temperatures (requires lm-sensors)
 def obtener_temperaturas():
+    # Uncomment and implement if lm-sensors is available
     # try:
     #     sensores = subprocess.check_output(['sensors'], encoding='utf-8')
     #     for linea in sensores.splitlines():
@@ -87,15 +84,11 @@ data_buffers = {key: load_data(path) for key, path in data_paths.items()}
 # Measure metrics
 new_entry = measure_metrics()
 
-# Update data buffers
+# Update data buffer
 data_buffers["hourly"].append(new_entry)
-data_buffers["minute"].append(new_entry)
-data_buffers["second"].append(new_entry)
 
-# Trim data
+# Trim data to the last 1 hour (3600 seconds)
 data_buffers["hourly"] = trim_data(data_buffers["hourly"], 3600)  # Last 1 hour
-data_buffers["minute"] = trim_data(data_buffers["minute"], 3600)  # Last 60 minutes
-data_buffers["second"] = trim_data(data_buffers["second"], 300)  # Last 300 seconds
 
 # Save updated data
 for key, path in data_paths.items():
@@ -103,6 +96,9 @@ for key, path in data_paths.items():
 
 # Function to generate plots
 def generate_plot(data, index, title, ylabel, save_path, ylim=None):
+    if not data:
+        print(f"No data available for {title}. Skipping plot.")
+        return
     timestamps = [row[0] for row in data]
     values = [row[index] for row in data]
     plt.figure(figsize=(10, 6))
@@ -114,6 +110,7 @@ def generate_plot(data, index, title, ylabel, save_path, ylim=None):
     plt.xlabel('Tiempo')
     plt.ylabel(ylabel)
     plt.legend()
+    plt.tight_layout()
     plt.savefig(save_path)
     plt.close()
 
@@ -128,17 +125,16 @@ plot_configs = [
     (7, 'Conexiones Activas', 'Conexiones', None),
 ]
 
-# Generate plots for each time window
-for time_window, folder in plot_folders.items():
-    for index, title, ylabel, ylim in plot_configs:
-        generate_plot(
-            data_buffers[time_window],
-            index,
-            f'{title} ({time_window.capitalize()})',
-            ylabel,
-            os.path.join(folder, f'{title.lower().replace(" ", "_")}_{time_window}.jpg'),
-            ylim,
-        )
+# Generate plots for hourly data
+for index, title, ylabel, ylim in plot_configs:
+    generate_plot(
+        data_buffers["hourly"],
+        index,
+        f'{title} (Hourly)',
+        ylabel,
+        os.path.join(plot_folders["hourly"], f'{title.lower().replace(" ", "_")}_hourly.jpg'),
+        ylim,
+    )
 
 print("Métricas actualizadas y gráficas generadas correctamente.")
 

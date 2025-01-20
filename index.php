@@ -63,15 +63,22 @@ $images = $loggedIn ? getImages($chartFolders[$selectedType]) : [];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>jocarsa | Tomato</title>
-    <link rel="icon" href="https://jocarsa.com/static/logo/jocarsa%20%7c%20Tomato.svg" type="image/svg+xml">
+    <link rel="icon" href="https://jocarsa.com/static/logo/tomato.png" type="image/svg+xml">
     <style>
-        /* General Styles */
-        body {
-            font-family: Ubuntu, Arial, sans-serif;
+        /* Reset and General Styles */
+        * {
+            box-sizing: border-box;
             margin: 0;
-            display: flex;
-            height: 100vh;
+            padding: 0;
         }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
         .header {
             background-color: tomato;
             width: 100%;
@@ -84,43 +91,66 @@ $images = $loggedIn ? getImages($chartFolders[$selectedType]) : [];
             top: 0;
             left: 0;
             z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header .app-name {
+            font-size: 1.5rem;
+            font-weight: bold;
         }
         .header .logout-button {
             background-color: tomato;
             color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
+            border: 2px solid white;
+            padding: 8px 16px;
+            border-radius: 25px;
             cursor: pointer;
             text-decoration: none;
             font-size: 1rem;
+            transition: background-color 0.3s, border-color 0.3s;
         }
         .header .logout-button:hover {
             background-color: darkred;
+            border-color: darkred;
         }
+
+        /* Sidebar Styles */
         .sidebar {
             width: 250px;
-            background: #f4f4f4;
+            background: #fff;
             padding: 20px;
             border-right: 1px solid #ddd;
+            position: fixed;
+            top: 70px; /* Height of the header */
+            bottom: 0;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+        .sidebar h3 {
+            margin-bottom: 20px;
+            color: tomato;
+            font-size: 1.2rem;
         }
         .sidebar a {
             display: block;
-            padding: 10px;
-            margin: 10px 0;
+            padding: 12px 16px;
+            margin: 8px 0;
             color: tomato;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
         }
         .sidebar a:hover, .sidebar a.active {
             background-color: tomato;
             color: white;
         }
+
+        /* Content Styles */
         .content {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            margin-top: 70px;
+            margin-top: 70px; /* Height of the header */
+            margin-left: 270px; /* Width of the sidebar + margin */
         }
         .dashboard {
             display: grid;
@@ -133,11 +163,149 @@ $images = $loggedIn ? getImages($chartFolders[$selectedType]) : [];
             padding: 15px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
         }
         .image-card img {
             max-width: 100%;
             height: auto;
             border-radius: 10px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 200; /* Sit on top */
+            padding-top: 60px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+        }
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 80%;
+            border-radius: 10px;
+            animation-name: zoom;
+            animation-duration: 0.6s;
+        }
+        @keyframes zoom {
+            from {transform:scale(0)}
+            to {transform:scale(1)}
+        }
+        .close {
+            position: absolute;
+            top: 30px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Login Styles */
+        .login-container {
+            background: #fff;
+            padding: 40px 30px;
+            max-width: 400px;
+            width: 90%;
+            margin: 100px auto;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+        }
+        .login-container .logo {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: tomato;
+            font-size: 1.8rem;
+        }
+        .login-container .error {
+            background-color: #f8d7da;
+            color: #842029;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        .login-container label {
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+            color: #555;
+            font-size: 0.95rem;
+        }
+        .login-container input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .login-container input:focus {
+            border-color: tomato;
+            outline: none;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: tomato;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .login-container button:hover {
+            background-color: darkred;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .content {
+                margin-left: 220px;
+            }
+        }
+        @media (max-width: 576px) {
+            .sidebar {
+                display: none;
+            }
+            .content {
+                margin-left: 0;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header .logout-button {
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
@@ -145,7 +313,7 @@ $images = $loggedIn ? getImages($chartFolders[$selectedType]) : [];
     <?php if ($loggedIn): ?>
         <!-- Header -->
         <div class="header">
-            <div class="app-name">jocarsa | tomato</div>
+            <div class="app-name">jocarsa | Tomato</div>
             <a href="index.php?action=logout" class="logout-button">Cerrar Sesión</a>
         </div>
 
@@ -153,8 +321,7 @@ $images = $loggedIn ? getImages($chartFolders[$selectedType]) : [];
         <div class="sidebar">
             <h3>Gráficas</h3>
             <a href="index.php?type=hourly" class="<?php echo $selectedType === 'hourly' ? 'active' : ''; ?>">Última Hora</a>
-            <a href="index.php?type=minute" class="<?php echo $selectedType === 'minute' ? 'active' : ''; ?>">Últimos Minutos</a>
-            <a href="index.php?type=second" class="<?php echo $selectedType === 'second' ? 'active' : ''; ?>">Últimos Segundos</a>
+           
         </div>
 
         <!-- Main Content -->
@@ -162,8 +329,8 @@ $images = $loggedIn ? getImages($chartFolders[$selectedType]) : [];
             <div class="dashboard">
                 <?php if (!empty($images)): ?>
                     <?php foreach ($images as $image): ?>
-                        <div class="image-card">
-                            <img src="<?php echo $chartFolders[$selectedType] . '/' . htmlspecialchars($image); ?>" alt="Chart">
+                        <div class="image-card" onclick="openModal('<?php echo htmlspecialchars($chartFolders[$selectedType] . '/' . $image); ?>')">
+                            <img src="<?php echo htmlspecialchars($chartFolders[$selectedType] . '/' . $image); ?>" alt="Chart">
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -171,17 +338,49 @@ $images = $loggedIn ? getImages($chartFolders[$selectedType]) : [];
                 <?php endif; ?>
             </div>
         </div>
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img class="modal-content" id="modalImage" alt="Chart Enlarged">
+        </div>
+
+        <!-- JavaScript for Modal -->
+        <script>
+            function openModal(src) {
+                var modal = document.getElementById("myModal");
+                var modalImg = document.getElementById("modalImage");
+                modal.style.display = "block";
+                modalImg.src = src;
+            }
+
+            function closeModal() {
+                var modal = document.getElementById("myModal");
+                modal.style.display = "none";
+            }
+
+            // Close the modal when clicking outside the image
+            window.onclick = function(event) {
+                var modal = document.getElementById("myModal");
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        </script>
     <?php else: ?>
         <div class="login-container">
+            <img src="https://jocarsa.com/static/logo/tomato.png" alt="Tomato Logo" class="logo">
             <h2>Iniciar Sesión</h2>
             <?php if (isset($error)): ?>
                 <div class="error"><?php echo htmlspecialchars($error); ?></div>
             <?php endif; ?>
             <form action="index.php" method="post">
                 <label for="username">Usuario</label>
-                <input type="text" id="username" name="username" required>
+                <input type="text" id="username" name="username" required placeholder="Ingresa tu usuario">
+                
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" name="password" required placeholder="Ingresa tu contraseña">
+                
                 <button type="submit" name="login">Entrar</button>
             </form>
         </div>
